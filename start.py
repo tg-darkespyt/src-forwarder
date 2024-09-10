@@ -16,18 +16,18 @@ async def main():
 @client.on(events.NewMessage(chats=SOURCE_CHANNELS))
 async def forward_message(event):
     try:
-        if event.photo and 'SRC' in (event.message.message or ''):
-            caption = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", event.message.message or '')
+        message_text = event.message.message or ''
+        caption = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", message_text)
+        if event.photo and re.search(r'\b(SRC|SOURCE|UI)\b', message_text, re.IGNORECASE):
             for target_channel in TARGET_CHANNELS:
                 await client.send_file(target_channel, event.message.media, caption=caption)
-        elif 'SRC' in (event.message.message or ''):
+        elif event.document and event.document.mime_type == 'application/zip' and re.search(r'\b(SRC|SOURCE)\b', message_text, re.IGNORECASE):
+            for target_channel in TARGET_CHANNELS:
+                await client.send_file(target_channel, event.message.media, caption=caption)
+        elif re.search(r'\b(SRC|SOURCE)\b', message_text, re.IGNORECASE):
             text = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", event.message.message)
             for target_channel in TARGET_CHANNELS:
                 await client.send_message(target_channel, text)
-        elif event.document and event.document.mime_type == 'application/zip':
-            caption = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", event.message.message or '')
-            for target_channel in TARGET_CHANNELS:
-                await client.send_file(target_channel, event.message.media, caption=caption)
     except Exception as e:
         print(f"An error occurred: {e}")
 
