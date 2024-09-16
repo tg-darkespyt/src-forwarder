@@ -1,0 +1,11 @@
+{
+  "name": "My Codespace",
+  "image": "mcr.microsoft.com/vscode/devcontainers/python:3",
+  "settings": {},
+  "postCreateCommand": "echo Welcome to your Codespace",
+  "customizations": {},
+  "hostRequirements": {
+    "memory": "16gb",
+    "vCPU": "8"
+  }
+}
