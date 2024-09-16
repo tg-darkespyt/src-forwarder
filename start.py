@@ -50,10 +50,11 @@ async def forward_message(event):
         message_text = event.message.message or ''
         post_id = event.message.id
         password = extract_password(message_text)
+        caption = message_text
         if password is not None:
             save_password(post_id, password)
-            caption = re.sub(re.escape(password), "`JOIN : @DARKESPYT`", message_text)
-            caption = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", caption)
+            caption = re.sub(re.escape(password), "`JOIN : @DARKESPYT`", caption)
+        caption = re.sub(r"http\S+|https\S+|@\w+", "@DARKESPYT", caption)
         if event.document and event.document.mime_type == 'application/zip':
             doc_name = event.document.attributes[0].file_name if event.document.attributes else ''
             if re.search(r'\b(src|source|imgui|java|hud|sdk)\b', doc_name, re.IGNORECASE) or re.search(r'\b(src|source|imgui|java|hud|sdk)\b', message_text, re.IGNORECASE):
