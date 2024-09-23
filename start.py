@@ -62,11 +62,16 @@ async def forward_message(event):
                 extracted_folder = os.path.join(os.path.dirname(file_path), f"extracted_{post_id}")
                 os.makedirs(extracted_folder, exist_ok=True)
                 try:
-                    with zipfile.ZipFile(file_path, 'r') as zf:
-                        zf.extractall(extracted_folder)
+                    with pyzipper.AESZipFile(file_path, 'r') as zf:
+                        zf.pwd = password.encode('utf-8')  # Use the extracted password to open the zip
+                        for file_info in zf.infolist():
+                            if file_info.filename.endswith('.gitignore'):
+                                print(f"Skipping .gitignore file: {file_info.filename}")
+                                continue
+                            zf.extract(file_info, extracted_folder)
                     if not os.listdir(extracted_folder):
                         raise Exception("No files extracted. Check password or file integrity.")
-                except (RuntimeError, zipfile.BadZipFile) as e:
+                except (RuntimeError, zipfile.BadZipFile, pyzipper.BadZipFile, pyzipper.LargeZipFile) as e:
                     print(f"Error during extraction: {e}")
                     return
                 recompressed_path = os.path.join(os.path.dirname(file_path), f"@DARKESPYT_{doc_name}")
@@ -94,6 +99,9 @@ async def forward_message(event):
 async def handle_dm(event):
     try:
         dm_text = event.message.message or ''
+        if 'Soul-noob-fucked-by-darkespyt-v2' in dm_text:
+            reply_text = '''yes you're right, darkespyt f*cked soul crackers noob.\nHere's the password: `Soul ki baap channel ko join kar : @DARKESPYT`\n\nJoin For More : @DARKESPYT [ 𝑹𝒆-𝑩𝒖𝒊𝒍𝒅𝒊𝒏𝒈 ]'''
+            await event.respond(reply_text)
         post_id_match = re.search(r'https://t\.me/DARKESPYT/(\d+)', dm_text)
         if post_id_match:
             post_id = int(post_id_match.group(1))
