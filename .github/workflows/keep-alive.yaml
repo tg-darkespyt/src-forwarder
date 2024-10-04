@@ -1,0 +1,19 @@
+name: Keep Codespace Alive by @DARKESPYT
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Loop every second
+        run: |
+          for i in {1..60}; do
+            echo "Keeping alive at $(date) by @DARKESPYT" >> keep_alive.log
+            sleep 1
+          done
+          

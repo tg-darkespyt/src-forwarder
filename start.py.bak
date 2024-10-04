@@ -97,17 +97,8 @@ async def handle_dm(event):
         if 'Soul-noob-fucked-by-darkespyt' in dm_text:
             reply_text = '''yes you're right, darkespyt f*cked soul crackers noob.\nHere's the password: `Leak by "Soul Baap" @DARKESPYT`\n\nJoin For More : @DARKESPYT [ 𝑹𝒆-𝑩𝒖𝒊𝒍𝒅𝒊𝒏𝒈 ]'''
             await event.respond(reply_text)
-            sticker_set = InputStickerSetShortName('NSTSTORE1')
-            sticker_set_data = await client(GetStickerSetRequest(stickerset=sticker_set))
-            sticker_to_send = None
-            for sticker in sticker_set_data.documents:
-                if sticker.id == 'CAACAgUAAxkBAAJ9DmbuwEMKwxttq9w1UUGOGCxgTeNkAAKsBQACZ50BVQjwVuqvzlsTNgQ':  # Replace this with the actual sticker ID
-                    sticker_to_send = sticker
-                    break
-            if sticker_to_send:
-                await client.send_file(event.sender_id, InputDocument(id=sticker_to_send.id, access_hash=sticker_to_send.access_hash, file_reference=sticker_to_send.file_reference))
-            else:
-                print("Sticker not found in the set.")
+            STICKER_FILE_ID = 'CAACAgUAAxkBAAEM2Spm7r5YEFNiD3j6CGJw9f6aQxs4yQACrAUAAmedAVUI8Fbqr85bEzYE'
+            await client.send_file(event.sender_id, STICKER_FILE_ID)
         post_id_match = re.search(r'https://t\.me/DARKESPYT/(\d+)', dm_text)
         if post_id_match:
             post_id = int(post_id_match.group(1))
