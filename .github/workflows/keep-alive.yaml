@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Loop every second
         run: |
-          for i in {1..60}; do
+          for i in {1..6}; do
             echo "Keeping alive at $(date) by @DARKESPYT" >> keep_alive.log
             sleep 1
           done
