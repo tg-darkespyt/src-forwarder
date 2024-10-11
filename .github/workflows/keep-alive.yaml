@@ -42,7 +42,7 @@ jobs:
 
     - name: Decode session file by @DARKESPYT
       run: |
-          echo "${{ secrets.SESSION_BASE64 }}" | base64 --decode > SRC_FORWARDER.session
+          echo "${{ secrets.SESSION_BASE64 }}" | base64 -d > SRC_FORWARDER.session
     
     - name: Run Bot Script in Codespace by @DARKESPYT
       env:
