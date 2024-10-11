@@ -11,21 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Action Checkout code by @DARKESPYT
       uses: actions/checkout@v3
 
-    - name: Install Dependencies
+    - name: Install Required Packages and Libraries by @DARKESPYT
       run: |
         sudo apt-get update
         sudo apt-get install -y python3 python3-pip
         pip3 install pexpect
 
-    - name: Authenticate with GitHub CLI
+    - name: LOGIN INTO GH CLI by @DARKESPYT
       run: |
         echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
         gh auth status
 
-    - name: Start Codespace if stopped
+    - name: Starting Codespace by @DARKESPYT
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
       run: |
@@ -40,10 +40,10 @@ jobs:
           fi
         done
 
-    - name: Run Python Script in Codespace
+    - name: Run Bot Script in Codespace by @DARKESPYT
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
       run: |
-        gh codespace ssh --codespace "${CODESPACE}" -- bash -c "python3 ${SCRIPT_PATH}"
+        gh codespace ssh "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}"
         
