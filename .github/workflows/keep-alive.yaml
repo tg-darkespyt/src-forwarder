@@ -46,7 +46,5 @@ jobs:
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
         PHONE_NUMBER: +918678996799
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}" &&
-        gh codespace ssh -c "${CODESPACE}" -- tmux send-keys -t bot "python3 ${SCRIPT_PATH}" C-m &&
-        gh codespace ssh -c "${CODESPACE}" -- bash -c "tmux send-keys -t bot \"${PHONE_NUMBER}\" C-m"
+        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && echo ${PHONE_NUMBER} | python3 ${SCRIPT_PATH}"
         
