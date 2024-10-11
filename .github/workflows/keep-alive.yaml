@@ -1,4 +1,4 @@
-name: Keep Codespace Alive by @DARKESPYT
+name: Keep Codespace Alive for 24*7 by @DARKESPYT
 
 on:
   workflow_dispatch:
