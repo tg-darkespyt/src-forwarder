@@ -1,7 +1,6 @@
 name: Keep Codespace Alive for 24*7 by @DARKESPYT
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
