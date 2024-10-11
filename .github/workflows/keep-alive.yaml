@@ -48,6 +48,7 @@ jobs:
             echo "Codespace is running."
             break
           fi
+          sleep 5  # Check every 5 seconds
         done
 
     - name: Connect to Codespace and Run Script
