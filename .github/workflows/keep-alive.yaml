@@ -21,30 +21,24 @@ jobs:
         pip3 install pexpect
 
     - name: Authenticate with GitHub CLI
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Make sure to add your GH_TOKEN to the repository secrets
       run: |
-        echo $GH_TOKEN | gh auth login --with-token
+        gh auth login --with-token < ${{ secrets.GH_TOKEN }}
         gh auth status
 
     - name: Start Codespace if stopped
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
       run: |
-        echo "Checking if Codespace is running..."
         STATUS=$(gh codespace list --json name,status --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .status')
-        echo "Codespace status: $STATUS"
         if [ "$STATUS" == "STOPPED" ]; then
-          echo "Starting Codespace..."
           gh codespace start --codespace $CODESPACE
         fi
-        echo "Waiting for Codespace to be ready..."
         while true; do
           STATUS=$(gh codespace list --json name,status --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .status')
           if [ "$STATUS" == "RUNNING" ]; then
-            echo "Codespace is running."
             break
           fi
+          sleep 5
         done
 
     - name: Run Python Script in Codespace
@@ -52,6 +46,4 @@ jobs:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
       run: |
-        echo "Running script in Codespace ${CODESPACE}..."
         gh codespace ssh --codespace "${CODESPACE}" -- bash -c "python3 ${SCRIPT_PATH}"
-        
