@@ -45,5 +45,5 @@ jobs:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
       run: |
-        gh codespace ssh -- codespace $CODESPACE -- tmux new-session -d -s bot rm -rf *.zip && rm -rf extracted* && python3 $SCRIPT_PATH
+        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}"
         
