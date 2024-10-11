@@ -22,7 +22,7 @@ jobs:
 
     - name: Authenticate with GitHub CLI
       run: |
-        gh auth login --with-token < ${{ secrets.GH_TOKEN }}
+        echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
         gh auth status
 
     - name: Start Codespace if stopped
@@ -47,3 +47,4 @@ jobs:
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
       run: |
         gh codespace ssh --codespace "${CODESPACE}" -- bash -c "python3 ${SCRIPT_PATH}"
+        
