@@ -30,15 +30,14 @@ jobs:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
       run: |
         STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
-        if [ "$STATUS" == "STOPPED" ]; then
+        if [ "$STATUS" == "SHUTDOWN" ]; then
           gh codespace start --codespace $CODESPACE
         fi
         while true; do
           STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
-          if [ "$STATUS" == "RUNNING" ]; then
+          if [ "$STATUS" == "AVAILABLE" ]; then
             break
           fi
-          sleep 5
         done
 
     - name: Run Python Script in Codespace
