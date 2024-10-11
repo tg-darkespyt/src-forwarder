@@ -1,19 +1,50 @@
 name: Keep Codespace Alive by @DARKESPYT
 
 on:
-  schedule:
-    - cron: '*/1 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  keep-alive:
+  run-codespace:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Loop every second
-        run: |
-          for i in {1..6}; do
-            echo "Keeping alive at $(date) by @DARKESPYT" >> keep_alive.log
-            sleep 1
-          done
-          
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tmux python3 python3-pip
+        pip3 install pexpect
+
+    - name: Authenticate with GitHub CLI
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        echo $GH_TOKEN | gh auth login --with-token
+
+    - name: Connect to Codespace and Run Script
+      env:
+        CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
+        SCRIPT_PATH: /workspaces/src-forwarder/start.py
+        SESSION_NAME: bot
+      run: |
+        import pexpect
+
+        codespace = "${{ env.CODESPACE }}"
+        script_path = "${{ env.SCRIPT_PATH }}"
+        session_name = "${{ env.SESSION_NAME }}"
+
+        ssh_connection = pexpect.spawn(f"gh codespace ssh --codespace {codespace}")
+        ssh_connection.expect(["$", "#"])
+        ssh_connection.sendline(f"tmux attach -t {session_name}")
+        index = ssh_connection.expect([pexpect.TIMEOUT, pexpect.EOF, "no sessions"], timeout=3)
+        if index == 2:
+            ssh_connection.sendline(f"tmux new -s {session_name} -d")
+            ssh_connection.expect(["$", "#"])
+            ssh_connection.sendline(f"tmux send-keys -t {session_name} 'python3 {script_path}' C-m")
+            ssh_connection.sendline(f"tmux attach -t {session_name}")
+        ssh_connection.interact()
