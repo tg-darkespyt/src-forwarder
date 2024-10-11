@@ -29,12 +29,12 @@ jobs:
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
       run: |
-        STATUS=$(gh codespace list --json name,status --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .status')
+        STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
         if [ "$STATUS" == "STOPPED" ]; then
           gh codespace start --codespace $CODESPACE
         fi
         while true; do
-          STATUS=$(gh codespace list --json name,status --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .status')
+          STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
           if [ "$STATUS" == "RUNNING" ]; then
             break
           fi
