@@ -31,7 +31,7 @@ jobs:
       run: |
         STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
         if [ "$STATUS" == "Shutdown" ]; then
-          gh codespace ssh $CODESPACE
+          gh codespace ssh --codespace $CODESPACE
         fi
         while true; do
           STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
