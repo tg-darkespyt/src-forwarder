@@ -46,10 +46,24 @@ jobs:
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
         PHONE_NUMBER: +918678996799
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && expect -c '
-          spawn python3 ${SCRIPT_PATH}
-          expect \"Please enter your phone (or bot token): \"
-          send \"${PHONE_NUMBER}\r\"
-          interact
-        '"
+        echo "import pexpect
+
+codespace = '${{ env.CODESPACE }}'
+phone_number = '${{ env.PHONE_NUMBER }}'
+script_path = '${{ env.SCRIPT_PATH }}'
+
+def run_script():
+    session = pexpect.spawn(f'gh codespace ssh -c {codespace}')
+    session.expect(['$', '#'])
+    session.sendline(f'tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 {script_path}"')
+    session.expect(['$', '#'])
+    session.sendline(f'tmux send-keys -t bot \"python3 {script_path}\" C-m')
+    session.expect(\"Please enter your phone (or bot token): \")
+    session.sendline(f\"{phone_number}\")
+    session.interact()
+
+if __name__ == '__main__':
+    run_script()
+" > run_bot.py
+        python3 run_bot.py
         
