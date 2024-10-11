@@ -8,7 +8,6 @@ import shutil
 
 API_ID = '21814194'
 API_HASH = '9535a6cee1e1d8e3a97a245f73b2d52a'
-PHONE_NUMBER = '+918678996799'
 TARGET_CHANNELS = ['@DARKESPYT', '@Source_Leak', '@Source_HUB', '@BADBOY_MAIN']
 SOURCE_CHANNELS = ['@backuprrrrrr', '@Dazai_FreeSrc', '@CAPTAINSRC', '@KINGMODEVIPSRC', '@VIP_SRC_Leakers', '@LEAK_SRC_ALL', '@Tharki_Pushpa', '@SRC_BGMI_GL_KR_VNG', '@SrcEsp', '@PrivateFileTg', '@KNIGHTMODSSRCS', '@NOBITA_SRC', '@VIP_SRC_LEEKAR', '@Yarasa_Src', '@SrcLeakerVip', '@MadSrcLeakers', '@PRIVATE_SRC', '@SrcTeam']
 
@@ -20,7 +19,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS passwords (post_id INTEGER PRIMARY 
 conn.commit()
 
 async def main():
-    await client.start(PHONE_NUMBER)
+    await client.start()
     print("Client Started")
 
 def save_password(post_id, password):
