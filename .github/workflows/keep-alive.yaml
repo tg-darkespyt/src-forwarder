@@ -39,11 +39,16 @@ jobs:
             break
           fi
         done
-
+        
+    - name: Use Telegram Session File by @DARKESPYT
+      run: |
+        chmod 600 ~/SRC_FORWARDER.session
+      
     - name: Run Bot Script in Codespace by @DARKESPYT
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
+        PHONE_NUMBER: +918678996799
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}"
+        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && echo ${PHONE_NUMBER} | python3 ${SCRIPT_PATH}"
         
