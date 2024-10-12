@@ -51,6 +51,14 @@ jobs:
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
         PHONE_NUMBER: +918678996799
         SESSION_FILE: ${{ secrets.SESSION_FILE }}.session
+        OTP_CODE : ${{ secrets.OTP }}
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && echo ${PHONE_NUMBER} | python3 ${SCRIPT_PATH}"
+        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "expect -c '
+          spawn python3 ${SCRIPT_PATH}
+          expect \"Please enter your phone (or bot token): \"
+          send \"${PHONE_NUMBER}\r\"
+          expect \"Please enter the code you received: \"
+          send \"${OTP_CODE}\r\"
+          interact
+        '"
         
