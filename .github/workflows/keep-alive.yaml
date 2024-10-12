@@ -47,11 +47,11 @@ jobs:
         PHONE_NUMBER: +918678996799
         OTP_CODE: ${{ secrets.OTP }}
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- bash -c '
+        gh codespace ssh -c "${CODESPACE}" -- bash -c "
           rm -rf *.zip
           rm -rf extracted*
           python3 ${SCRIPT_PATH} <<EOF
         ${PHONE_NUMBER}
         ${OTP_CODE}
-        EOF'
+        EOF"
 
