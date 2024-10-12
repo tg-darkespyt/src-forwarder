@@ -39,11 +39,6 @@ jobs:
             break
           fi
         done
-        
-    - name: Use Telegram Session File by @DARKESPYT
-      run: |
-        ls -la ${{ secrets.SESSION_FILE }}.session
-        sudo chmod 600 ${{ secrets.SESSION_FILE }}.session
       
     - name: Run Bot Script in Codespace by @DARKESPYT
       env:
@@ -53,7 +48,7 @@ jobs:
         SESSION_FILE: ${{ secrets.SESSION_FILE }}.session
         OTP_CODE : ${{ secrets.OTP }}
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- tmux new-session -d -s bot "expect -c '
+        gh codespace ssh -c "${CODESPACE}" -- "expect -c '
           spawn python3 ${SCRIPT_PATH}
           expect \"Please enter your phone (or bot token): \"
           send \"${PHONE_NUMBER}\r\"
