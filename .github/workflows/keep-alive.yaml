@@ -48,7 +48,7 @@ jobs:
         SESSION_FILE: ${{ secrets.SESSION_FILE }}.session
         OTP_CODE : ${{ secrets.OTP }}
       run: |
-        gh codespace ssh -c "${CODESPACE}" -- "expect -c '
+        gh codespace ssh -c "${CODESPACE}" "expect -c '
           spawn python3 ${SCRIPT_PATH}
           expect \"Please enter your phone (or bot token): \"
           send \"${PHONE_NUMBER}\r\"
