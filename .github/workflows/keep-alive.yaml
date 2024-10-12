@@ -17,7 +17,7 @@ jobs:
     - name: Install Required Packages and Libraries by @DARKESPYT
       run: |
         sudo apt-get update
-        sudo apt-get install -y expect python3 python3-pip
+        sudo apt-get install -y python3 python3-pip
         pip3 install pexpect
 
     - name: LOGIN INTO GH CLI by @DARKESPYT
@@ -49,13 +49,11 @@ jobs:
         OTP_CODE : ${{ secrets.OTP }}
       run: |
         gh codespace ssh -c "${CODESPACE}" -- bash -c '
-          if ! tmux has-session -t bot 2>/dev/null; then
-            tmux new-session -d -s bot "rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}" 
-            sleep 5 
-            tmux send-keys -t bot "${PHONE_NUMBER}" C-m 
-            sleep 2 
-            tmux send-keys -t bot "${OTP_CODE}" C-m 
-          fi
-          tmux attach-session -t bot
+          rm -rf *.zip
+          rm -rf extracted*
+          python3 ${SCRIPT_PATH} << EOF
+            ${PHONE_NUMBER}
+            ${OTP_CODE}
+          EOF
         '
         
