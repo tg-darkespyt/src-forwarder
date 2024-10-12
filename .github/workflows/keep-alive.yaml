@@ -51,7 +51,7 @@ jobs:
           rm -rf *.zip
           rm -rf extracted*
           python3 ${SCRIPT_PATH} <<EOF
-${PHONE_NUMBER}
-${OTP_CODE}
-EOF
+          ${PHONE_NUMBER}
+          ${OTP_CODE}
+          EOF
         '
