@@ -49,116 +49,25 @@ jobs:
         PHONE_NUMBER: +918678996799
         OTP_CODE: ${{ secrets.OTP }}
       run: |
-        ChatGPT
-
-You said:
-Is GitHub workflow action can run for 24*7 ?
-ChatGPT said:
-ChatGPT
-GitHub Actions workflows cannot run continuously for 24/7. Workflows are triggered by events, such as code pushes, pull requests, or scheduled cron jobs. However, they have a maximum run time of 72 minutes for individual jobs in a workflow.
-
-If you need a process to run continuously, you can set up a scheduled workflow that runs at frequent intervals (e.g., every minute or every hour) using cron syntax. Alternatively, consider using external services or cloud providers that allow for persistent running processes, such as AWS Lambda, Google Cloud Functions, or a virtual machine.
-
-
-
-
-
-
-
-You said:
-while true; do
-          STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
-          if [ "$STATUS" == "Available" ]; then
-            break
-          fi
-        done
-
-Change this into 
-    - name: Run Bot Script in Codespace by @DARKESPYT
-      env:
-        CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
-        SCRIPT_PATH: /workspaces/src-forwarder/start.py
-        PHONE_NUMBER: +918678996799
-        OTP_CODE: ${{ secrets.OTP }}
-      run: |
-        gh codespace ssh -c "${CODESPACE}" -- bash -c "
-          rm -rf *.zip
-          rm -rf extracted*
-          python3 ${SCRIPT_PATH} <<EOF
-        ${PHONE_NUMBER}
-        ${OTP_CODE}
-
-        EOF"
-ChatGPT said:
-ChatGPT
-Here is the modified workflow step:
-
-yaml
-Copy code
-    - name: Run Bot Script in Codespace by @DARKESPYT
-      env:
-        CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
-        SCRIPT_PATH: /workspaces/src-forwarder/start.py
-        PHONE_NUMBER: +918678996799
-        OTP_CODE: ${{ secrets.OTP }}
-      run: |
-        while true; do
+        check_codespace() {
           STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "'"${CODESPACE}"'") | .state')
+          echo "$STATUS"
+        }
+        while true; do
+          STATUS=$(check_codespace)
           if [ "$STATUS" == "Available" ]; then
+            echo "Codespace is available. Starting the bot script."
             break
           fi
+          echo "Codespace is not available yet. Checking again..."
         done
-
-        gh codespace ssh -c "${CODESPACE}" -- bash -c "
-          rm -rf *.zip
-          rm -rf extracted*
-          python3 ${SCRIPT_PATH} <<EOF
-        ${PHONE_NUMBER}
-        ${OTP_CODE}
-
-        EOF"
-This version keeps the check for the codespace's availability before executing the bot script, ensuring that the codespace is ready before proceeding.
-
-
-
-
-
-
-
-You said:
-Check if codespace is available if it's true then loop it using while looping statement 
-ChatGPT said:
-ChatGPT
-To continuously run a script in a GitHub Codespace while checking if it's available, you can structure your workflow like this:
-
-yaml
-Copy code
-- name: Run Bot Script in Codespace by @DARKESPYT
-  env:
-    CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
-    SCRIPT_PATH: /workspaces/src-forwarder/start.py
-    PHONE_NUMBER: +918678996799
-    OTP_CODE: ${{ secrets.OTP }}
-  run: |
-    check_codespace() {
-      STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "'"${CODESPACE}"'") | .state')
-      echo "$STATUS"
-    }
-    while true; do
-      STATUS=$(check_codespace)
-      if [ "$STATUS" == "Available" ]; then
-        echo "Codespace is available. Starting the bot script."
-        break
-      fi
-      echo "Codespace is not available yet. Checking again..."
-    done
-    while true; do
-      gh codespace ssh -c "${CODESPACE}" -- bash -c "
-        rm -rf *.zip
-        rm -rf extracted*
-        python3 ${SCRIPT_PATH} <<EOF
-      ${PHONE_NUMBER}
-      ${OTP_CODE}
-      EOF"
-    done
-
+        while true; do
+          gh codespace ssh -c "${CODESPACE}" -- bash -c "
+            rm -rf *.zip
+            rm -rf extracted*
+            python3 ${SCRIPT_PATH} <<EOF
+          ${PHONE_NUMBER}
+          ${OTP_CODE}
+          EOF"
+        done
+  
