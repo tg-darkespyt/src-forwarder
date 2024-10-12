@@ -31,7 +31,7 @@ jobs:
       run: |
         STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
         if [ "$STATUS" == "Shutdown" ]; then
-          gh codespace ssh --codespace $CODESPACE
+          gh codespace start --codespace $CODESPACE
         fi
         while true; do
           STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "${{ env.CODESPACE }}") | .state')
@@ -45,15 +45,13 @@ jobs:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
         SCRIPT_PATH: /workspaces/src-forwarder/start.py
         PHONE_NUMBER: +918678996799
-        SESSION_FILE: ${{ secrets.SESSION_FILE }}.session
-        OTP_CODE : ${{ secrets.OTP }}
+        OTP_CODE: ${{ secrets.OTP }}
       run: |
         gh codespace ssh -c "${CODESPACE}" -- bash -c '
           rm -rf *.zip
           rm -rf extracted*
-          python3 ${SCRIPT_PATH} << EOF
-            ${PHONE_NUMBER}
-            ${OTP_CODE}
-          EOF
+          python3 ${SCRIPT_PATH} <<EOF
+${PHONE_NUMBER}
+${OTP_CODE}
+EOF
         '
-        
