@@ -49,9 +49,10 @@ jobs:
         OTP_CODE : ${{ secrets.OTP }}
       run: |
         gh codespace ssh -c "${CODESPACE}" -- bash -c "
-          tmux new-session -d -s bot 'rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}'
-          tmux send-keys -t bot 'echo ${PHONE_NUMBER}' C-m
-          tmux send-keys -t bot 'echo ${OTP_CODE}' C-m
+          tmux new-session -d -s bot 'rm -rf *.zip && rm -rf extracted* && python3 ${SCRIPT_PATH}' &&
+          sleep 2 &&
+          tmux send-keys -t bot '${PHONE_NUMBER}' C-m &&
+          tmux send-keys -t bot '${OTP_CODE}' C-m &&
           tmux attach-session -t bot
         "
         
