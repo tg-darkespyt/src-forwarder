@@ -13,7 +13,6 @@ extracted*
 # Distribution / packaging
 .Python
 .bak
-.session
 .db
 .sql
 build/
