@@ -63,9 +63,6 @@ jobs:
           gh codespace ssh -c "${CODESPACE}" -- bash -c "
             rm -rf *.zip
             rm -rf extracted*
-            python3 ${SCRIPT_PATH} <<EOF
-            ${PHONE_NUMBER}
-            ${OTP_CODE}
-            EOF"
+            python3 ${SCRIPT_PATH} ${PHONE_NUMBER} ${OTP_CODE}"
         done
   
