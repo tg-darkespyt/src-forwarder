@@ -18,7 +18,7 @@ jobs:
 
     - name: Install Required Packages and Libraries by @DARKESPYT
       run: |
-        sudo apt install python3-full
+        sudo apt install python3-full expect
 
     - name: LOGIN INTO GH CLI by @DARKESPYT
       run: |
@@ -63,6 +63,13 @@ jobs:
           gh codespace ssh -c "${CODESPACE}" -- bash -c "
             rm -rf *.zip
             rm -rf extracted*
-            python3 ${SCRIPT_PATH} ${PHONE_NUMBER} ${OTP_CODE}"
+            expect -c '
+              spawn python3 ${SCRIPT_PATH}
+              expect \"Please enter your phone (or bot token):\"
+              send \"${PHONE_NUMBER}\\r\"
+              expect \"Please enter the code you received:\"
+              send \"${OTP_CODE}\\r\"
+              expect eof
+            '"
         done
   
