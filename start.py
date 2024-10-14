@@ -2,13 +2,15 @@ from telethon import TelegramClient, events
 import re
 import mysql.connector
 import os
+import sys
 import pyzipper
 import zipfile
 import shutil
 
 API_ID = '21814194'
 API_HASH = '9535a6cee1e1d8e3a97a245f73b2d52a'
-PHONE_NUMBER = '+918678996799'
+PHONE_NUMBER = sys.argv[1]
+OTP_CODE = sys.argv[2]
 SESSION_FILE = os.getenv('SESSION_FILE')
 TARGET_CHANNELS = ['@DARKESPYT', '@Source_Leak', '@Source_HUB', '@BADBOY_MAIN']
 SOURCE_CHANNELS = ['@backuprrrrrr', '@Dazai_FreeSrc', '@CAPTAINSRC', '@KINGMODEVIPSRC', '@VIP_SRC_Leakers', '@LEAK_SRC_ALL', '@Tharki_Pushpa', '@SRC_BGMI_GL_KR_VNG', '@SrcEsp', '@PrivateFileTg', '@KNIGHTMODSSRCS', '@NOBITA_SRC', '@VIP_SRC_LEEKAR', '@Yarasa_Src', '@SrcLeakerVip', '@MadSrcLeakers', '@PRIVATE_SRC', '@SrcTeam']
@@ -28,7 +30,7 @@ db.commit()
 
 async def main():
     await client.start()
-    await client.start(phone=lambda: PHONE_NUMBER)
+    await client.start(phone=PHONE_NUMBER, code_callback=lambda: OTP_CODE)
     print("Client Started")
 
 def save_password(post_id, password):
