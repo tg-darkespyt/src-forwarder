@@ -55,20 +55,10 @@ jobs:
         PHONE_NUMBER: +918678996799
         OTP_CODE: ${{ secrets.OTP }}
       run: |
-        check_codespace() {
-          STATUS=$(gh codespace list --json name,state --jq '.[] | select(.name == "'"${CODESPACE}"'") | .state')
-          echo "$STATUS"
-        }
-        while true; do
-          STATUS=$(check_codespace)
-          if [ "$STATUS" == "Available" ]; then
-            echo "Codespace is available. Starting the bot script."
-            break
-          fi
-          echo "Codespace is not available yet. Checking again..."
-        done
         gh codespace ssh --codespace "${CODESPACE}"
-        tmux new-session -d -s bot 'git pull origin main && pip3 install telethon pyzipper shutil zipfile && python3 ${SCRIPT_PATH}'
+        git pull origin main
+        pip3 install telethon pyzipper shutil zipfile
+        python3 ${SCRIPT_PATH}
         while true; do
           git config --global user.name "tg-darkespyt"
           git config --global user.email "darkespyt8577@gmail.com"
