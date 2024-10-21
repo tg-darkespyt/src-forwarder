@@ -1,8 +1,7 @@
 from telethon import TelegramClient, events
 import re
-import mysql.connector
+import sqlite3
 import os
-import sys
 import pyzipper
 import zipfile
 import shutil
@@ -13,31 +12,29 @@ PHONE_NUMBER = '+918678996799'
 SESSION_FILE = os.getenv('SESSION_FILE')
 TARGET_CHANNELS = ['@DARKESPYT', '@Source_Leak', '@Source_HUB', '@BADBOY_MAIN']
 SOURCE_CHANNELS = ['@backuprrrrrr', '@Dazai_FreeSrc', '@CAPTAINSRC', '@KINGMODEVIPSRC', '@VIP_SRC_Leakers', '@LEAK_SRC_ALL', '@Tharki_Pushpa', '@SRC_BGMI_GL_KR_VNG', '@SrcEsp', '@PrivateFileTg', '@KNIGHTMODSSRCS', '@NOBITA_SRC', '@VIP_SRC_LEEKAR', '@Yarasa_Src', '@SrcLeakerVip', '@MadSrcLeakers', '@PRIVATE_SRC', '@SrcTeam']
+DB_FILE = 'passwords.db'
 
 client = TelegramClient(SESSION_FILE, API_ID, API_HASH)
 
-db = mysql.connector.connect(
-    host="103.186.185.103",
-    user="usir_died_real",
-    password="nGVjt275qv",
-    database="src_forward"
-)
-
+db = sqlite3.connect(DB_FILE)
 cursor = db.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS passwords (post_id INT PRIMARY KEY, password VARCHAR(255) NOT NULL)''')
-db.commit()
+if not os.path.exists(DB_FILE):
+    cursor.execute('''CREATE TABLE IF NOT EXISTS passwords (post_id INTEGER PRIMARY KEY, password TEXT NOT NULL)''')
+    db.commit()
 
 async def main():
-    await client.start()
-    await client.start(phone=lambda: PHONE_NUMBER)
-    print("Client Started")
+    if not os.path.exists(SESSION_FILE):
+        await client.start(phone=lambda: PHONE_NUMBER)
+        print("Client Started")
+    else:
+        print("Session file exists. Skipping login.")
 
 def save_password(post_id, password):
-    cursor.execute('''INSERT INTO passwords (post_id, password) VALUES (%s, %s) ON DUPLICATE KEY UPDATE password=%s''', (post_id, password, password))
+    cursor.execute('''INSERT INTO passwords (post_id, password) VALUES (?, ?) ON CONFLICT(post_id) DO UPDATE SET password=?''', (post_id, password, password))
     db.commit()
 
 def get_password(post_id):
-    cursor.execute('SELECT password FROM passwords WHERE post_id = %s', (post_id,))
+    cursor.execute('SELECT password FROM passwords WHERE post_id = ?', (post_id,))
     result = cursor.fetchone()
     return result[0] if result else None
 
@@ -93,7 +90,7 @@ async def forward_message(event):
                             zf.write(file_full_path, arcname)
                 shutil.rmtree(extracted_folder)
                 os.remove(file_path)
-                caption += f"\n\n**Note:** if the given password is not works or file is corrupted kindly send this `https://t.me/DARKESPYT/{post_id}` to @USIR_DIED_REAL. So my Master will help you!\n\nJoin For More : @DARKESPYT [ 𝑹𝒆-𝑩𝒖𝒊𝒍𝒅𝒊𝒏𝒈 ]"
+                caption += f"\n\n**Note:** if the given password is not working or the file is corrupted kindly send this `https://t.me/DARKESPYT/{post_id}` to @USIR_DIED_REAL. So my Master will help you!\n\nJoin For More : @DARKESPYT [ 𝑹𝒆-𝑩𝒖𝒊𝒍𝒅𝒊𝒏𝒈 ]"
                 for target_channel in TARGET_CHANNELS:
                     await client.send_file(target_channel, recompressed_path, caption=caption)
                 os.remove(recompressed_path)
@@ -119,5 +116,5 @@ async def handle_dm(event):
     except Exception as e:
         print(f"An error occurred in DM handling: {e}")
 
-client.start()
+client.loop.run_until_complete(main())
 client.run_until_disconnected()

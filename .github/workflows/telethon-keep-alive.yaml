@@ -67,17 +67,22 @@ jobs:
           fi
           echo "Codespace is not available yet. Checking again..."
         done
-        git pull origin main
+        gh codespace ssh --codespace "${CODESPACE}"
+        tmux new-session -d -s bot 'git pull origin main && pip3 install telethon pyzipper shutil zipfile && python3 ${SCRIPT_PATH}'
         while true; do
-          gh codespace ssh -c "${CODESPACE}" -- bash -c "
-            rm -rf *.zip
-            rm -rf extracted*
-            expect -c '
-              spawn python3 ${SCRIPT_PATH}
-              expect \"Please enter your phone (or bot token):\"
-              send \"${PHONE_NUMBER}\\r\"
-              expect \"Please enter the code you received:\"
-              send \"${OTP_CODE}\\r\"
-              expect eof
-            '"
+          git config --global user.name "tg-darkespyt"
+          git config --global user.email "darkespyt8577@gmail.com"
+          if [ -f passwords.db ]; then
+            git add .
+            if ! git diff --cached --quiet; then
+              git commit -m "Automated backup of passwords.db."
+              git push origin main
+              echo "Bot Database Backed up, check the repository."
+            else
+              echo "No changes to commit."
+            fi
+          else
+            echo "Failed to take backup of the Bot Database."
+          fi
+          sleep 60
         done
