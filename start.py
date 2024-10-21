@@ -2,6 +2,7 @@ from telethon import TelegramClient, events
 import re
 import sqlite3
 import os
+import sys
 import pyzipper
 import zipfile
 import shutil
@@ -13,8 +14,15 @@ SESSION_FILE = 'SRC_FORWARDER'
 TARGET_CHANNELS = ['@DARKESPYT', '@Source_Leak', '@Source_HUB', '@BADBOY_MAIN']
 SOURCE_CHANNELS = ['@backuprrrrrr', '@Dazai_FreeSrc', '@CAPTAINSRC', '@KINGMODEVIPSRC', '@VIP_SRC_Leakers', '@LEAK_SRC_ALL', '@Tharki_Pushpa', '@SRC_BGMI_GL_KR_VNG', '@SrcEsp', '@PrivateFileTg', '@KNIGHTMODSSRCS', '@NOBITA_SRC', '@VIP_SRC_LEEKAR', '@Yarasa_Src', '@SrcLeakerVip', '@MadSrcLeakers', '@PRIVATE_SRC', '@SrcTeam']
 DB_FILE = 'passwords.db'
+LOCKFILE = 'bot.lock'
 
 client = TelegramClient(SESSION_FILE, API_ID, API_HASH)
+
+if os.path.exists(LOCKFILE):
+    print("Bot is already running.")
+    sys.exit(0)
+else:
+    open(LOCKFILE, 'w').close()
 
 db = sqlite3.connect(DB_FILE)
 cursor = db.cursor()
@@ -116,5 +124,8 @@ async def handle_dm(event):
     except Exception as e:
         print(f"An error occurred in DM handling: {e}")
 
-client.loop.run_until_complete(main())
-client.run_until_disconnected()
+try:
+    client.loop.run_until_complete(main())
+    client.run_until_disconnected()
+finally:
+    os.remove(LOCKFILE)

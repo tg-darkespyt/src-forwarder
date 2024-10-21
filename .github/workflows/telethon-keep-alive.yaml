@@ -18,7 +18,7 @@ jobs:
 
     - name: Install Required Packages and Libraries by @DARKESPYT
       run: |
-        sudo apt install python3-full expect
+        sudo apt install python3-full
 
     - name: LOGIN INTO GH CLI by @DARKESPYT
       run: |
@@ -56,6 +56,14 @@ jobs:
         OTP_CODE: ${{ secrets.OTP }}
       run: |
         gh codespace ssh --codespace "${CODESPACE}"
+        LOCKFILE="/tmp/bot.lock"
+        if [ -f "$LOCKFILE" ]; then
+          echo "Bot is already running."
+          exit 0
+        else
+          touch "$LOCKFILE"
+          trap 'rm -f "$LOCKFILE"' EXIT
+        fi
         tmux new-session -d -s bot 'git pull origin main && pip3 install telethon pyzipper && python3 ${SCRIPT_PATH}'
         echo "Bot Started"
         while true; do
