@@ -57,7 +57,7 @@ jobs:
       run: |
         gh codespace ssh --codespace "${CODESPACE}"
         git pull origin main
-        pip3 install telethon pyzipper shutil zipfile
+        pip3 install telethon pyzipper
         python3 ${SCRIPT_PATH}
         while true; do
           git config --global user.name "tg-darkespyt"
