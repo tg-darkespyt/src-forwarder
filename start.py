@@ -17,10 +17,10 @@ SOURCE_CHANNELS = ['@backuprrrrrr', '@Dazai_FreeSrc', '@CAPTAINSRC', '@KINGMODEV
 client = TelegramClient(SESSION_FILE, API_ID, API_HASH)
 
 db = mysql.connector.connect(
-    host="sql7.freemysqlhosting.net",
-    user="sql7737698",
+    host="103.186.185.103",
+    user="usir_died_real",
     password="nGVjt275qv",
-    database="sql7737698"
+    database="src_forward"
 )
 
 cursor = db.cursor()
