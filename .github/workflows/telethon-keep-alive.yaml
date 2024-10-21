@@ -25,6 +25,14 @@ jobs:
         echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
         gh auth status
 
+    - name: Adding SSH Access by @DARKESPYT
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.GH_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        git remote set-url origin git@github.com:tg-darkespyt/src-forwarder.git
+
     - name: Starting Codespace by @DARKESPYT
       env:
         CODESPACE: fuzzy-space-palm-tree-5gq5jvwqjxrrfj6j
@@ -59,6 +67,7 @@ jobs:
           fi
           echo "Codespace is not available yet. Checking again..."
         done
+        git pull origin main
         while true; do
           gh codespace ssh -c "${CODESPACE}" -- bash -c "
             rm -rf *.zip
@@ -72,5 +81,3 @@ jobs:
               expect eof
             '"
         done
-
-  
