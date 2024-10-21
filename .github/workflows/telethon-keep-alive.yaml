@@ -56,9 +56,7 @@ jobs:
         OTP_CODE: ${{ secrets.OTP }}
       run: |
         gh codespace ssh --codespace "${CODESPACE}"
-        git pull origin main
-        pip3 install telethon pyzipper
-        python3 ${SCRIPT_PATH}
+        tmux new-session -d -s bot 'git pull origin main && pip3 install telethon pyzipper && python3 ${SCRIPT_PATH}'
         echo "Bot Started"
         while true; do
           git config --global user.name "tg-darkespyt"
