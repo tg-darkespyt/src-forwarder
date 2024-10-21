@@ -59,6 +59,7 @@ jobs:
         git pull origin main
         pip3 install telethon pyzipper
         python3 ${SCRIPT_PATH}
+        echo "Bot Started"
         while true; do
           git config --global user.name "tg-darkespyt"
           git config --global user.email "darkespyt8577@gmail.com"
